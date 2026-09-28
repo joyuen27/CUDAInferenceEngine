@@ -3,7 +3,7 @@
 
 # Development Notes
 
-I'm Joe Yuen, a developer focused on the intersection of software and hardware. I really enjoy embedded software, firmware and hardware acceleration. T
+I'm Joe Yuen, a developer focused on the intersection of software and hardware. I really enjoy embedded software, firmware and hardware acceleration.
 All code here is handwritten by me.
 
 Connect on LinkedIn: [linkedin.com/in/joe-yuen](https://www.linkedin.com/in/joe-yuen/)
