@@ -6,4 +6,5 @@ cc_library(
     hdrs = ["mlp.h"],
     strip_include_prefix = "//transformer/mlp",
     visibility = ["//:__pkg__"],
+    deps = ["//cuda:llm_mat_mul"],
 )

@@ -2,3 +2,11 @@ module(name = "infer", version = "0.1")
 
 bazel_dep(name = "rules_cc", version = "0.1.1")
 bazel_dep(name = "rules_shell", version = "0.3.0")
+bazel_dep(name = "rules_cuda", version = "0.3.0")
+
+cuda = use_extension("@rules_cuda//cuda:extensions.bzl", "toolkit")
+cuda.local_toolkit(
+    name = "local_cuda",
+    toolkit_path = "/usr/local/cuda-12.8",
+)
+use_repo(cuda, "local_cuda")

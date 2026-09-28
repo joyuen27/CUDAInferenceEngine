@@ -12,11 +12,11 @@ n_embd = cfg.n_embd
 vocab_size = cfg.vocab_size
 block_size = cfg.n_positions
 
-# Mark these to transpose
+# Mark these to transpose (stored as [out, in], Linear-style, for the CPU kernels)
 TRANSPOSE = {"attn.c_attn.weight", "attn.c_proj.weight", "mlp.c_fc.weight", "mlp.c_proj.weight"}
 
 def get(name):
-    # Cast tensor to fp32 
+    # Cast tensor to fp32
     t = sd[name].float()
 
     # Check if tensor is marked for transpose
@@ -24,6 +24,11 @@ def get(name):
         # Transpose
         t = t.t().contiguous()
     return t.numpy().tobytes()
+
+def get_raw(name):
+    # Un-transposed weight, exactly as HuggingFace stores it (Conv1D: [in, out]).
+    # This is the non-transposed B layout mat_mul_float4 wants for the GPU MLP.
+    return sd[name].float().contiguous().numpy().tobytes()
  
 with open("gpt2.bin", "wb") as f:
     # header: magic, n_layer, n_head, n_embd, vocab_size, block_size (all int32)
@@ -46,10 +51,13 @@ with open("gpt2.bin", "wb") as f:
         f.write(get(p + "attn.c_proj.bias"))
         f.write(get(p + "ln_2.weight"))
         f.write(get(p + "ln_2.bias"))
-        f.write(get(p + "mlp.c_fc.weight"))
+        f.write(get(p + "mlp.c_fc.weight"))     # transposed [4*n_embd, n_embd] (for cpu_mlp)
         f.write(get(p + "mlp.c_fc.bias"))
-        f.write(get(p + "mlp.c_proj.weight"))
+        f.write(get(p + "mlp.c_proj.weight"))   # transposed [n_embd, 4*n_embd] (for cpu_mlp)
         f.write(get(p + "mlp.c_proj.bias"))
+        # Un-transposed copies for the GPU MLP (mat_mul_float4 non-transposed B).
+        f.write(get_raw(p + "mlp.c_fc.weight"))    # [n_embd, 4*n_embd]
+        f.write(get_raw(p + "mlp.c_proj.weight"))  # [4*n_embd, n_embd]
  
     # final layernorm
     f.write(get("transformer.ln_f.weight"))

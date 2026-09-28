@@ -1,0 +1,6 @@
+# CUDA (rules_cuda) build config
+build --repo_env=CUDA_PATH=/usr/local/cuda-12.8
+build --@rules_cuda//cuda:archs=sm_120
+
+# rules_cuda pulls newer rules_cc/rules_shell than this module pins; don't fail on it.
+common --check_direct_dependencies=off

@@ -22,10 +22,12 @@ typedef struct {
     float* proj_b;
     float* ln2_w;
     float* ln2_b;
-    float* mlp_fc_w;
+    float* mlp_fc_w;      // transposed [4*n_embd, n_embd] (cpu_mlp)
     float* mlp_fc_b;
-    float* mlp_proj_w;
+    float* mlp_proj_w;    // transposed [n_embd, 4*n_embd] (cpu_mlp)
     float* mlp_proj_b;
+    float* mlp_fc_w_ut;   // un-transposed [n_embd, 4*n_embd] (gpu_mlp)
+    float* mlp_proj_w_ut; // un-transposed [4*n_embd, n_embd] (gpu_mlp)
 } Block;
 
 bool load_tokens();

@@ -1,32 +1,26 @@
 > **Disclaimer**
 > This README was drafted with help from AI and should be updated as the project evolves.
-> The CUDA notes were translated into text with AI from my handwritten notes, which are a little messy. I plan to upload the original handwritten notes later too.
+> The CUDA notes were translated into text with AI from my handwritten notes. The original handwritten notes are in `notes/handwritten/`.
 
 # CUDA Practice
 
-This folder tracks my CUDA learning and practice so far.
+CUDA learning and matrix-multiplication kernel practice.
 
-## What I have done
+## Status
 
-- Started a CUDA matrix multiplication exercise in `mat_mult/`.
-- Wrote a baseline GPU kernel where each CUDA thread computes one output element.
-- Added host-side code for matrix dimension checks, GPU memory allocation, host/device copies, kernel launch, synchronization, and cleanup.
-- Built a simple correctness check using a `512 x 512` identity matrix multiplied by another matrix.
-- Added CUDA learning notes in `notes/cuda_notes.pdf`, titled `CUDA Programming Notes`.
+Multiple matmul kernels implemented in `mat_mult/code/` and benchmarked against cuBLAS:
 
-## Files
+- `mat_mul_base` — naive, one thread per output element.
+- `mat_mul_tiled` — shared-memory tiling.
+- `mat_mul_regtile` — register tiling.
+- `mat_mul_float4` — float4 vectorized loads.
+- `mat_mul_cublas` — cuBLAS reference.
 
-- `mat_mult/mat_mul_base.cu` - baseline matrix multiplication implementation.
-- `mat_mult/prac_dev.cu` - practice copy of the matrix multiplication implementation.
-- `notes/cuda_notes.pdf` - 4-page CUDA programming notes PDF, translated into text with AI from my handwritten notes.
+Naive and tiled kernels profiled with Nsight Compute (reports in `mat_mult/testing/ncu-rep/`), including roofline analysis. Testing write-ups are in `notes/testing_notes/` (Phase 1 naive, Phase 2 tiled).
 
-## Current status
-
-The matrix multiplication code is close to a first working CUDA example, but there is one cleanup needed before compiling: the kernel is named `k_mat_mul_base`, while the launch currently calls `k_mat_mul`.
+Handwritten study notes in `notes/handwritten/`: CUDA basics, GPU architecture, roofline analysis, benchmarking best practices, and naive/tiled matmul.
 
 ## Next steps
 
-- Fix the kernel name mismatch.
-- Add CUDA error checks after memory allocation, memory copies, kernel launch, and synchronization.
-- Compile and run the matrix multiplication example with `nvcc`.
-- Keep improving the notes as I learn more about CUDA threads, blocks, grids, memory, and performance.
+- Continue profiling the vectorized and register-tiled kernels.
+- Extend benchmark notes to the remaining kernels.

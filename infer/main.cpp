@@ -213,7 +213,7 @@ void generate_kv() {
             cpu_layer_norm(V_embd, ln_out, b.ln2_w, b.ln2_b, n_new, cfg.n_embd);
 
             //MLP
-            cpu_mlp(ln_out, b.mlp_fc_w, b.mlp_fc_b, b.mlp_proj_w, b.mlp_proj_b, cfg.n_embd, n_new, mlp_delta);
+            gpu_mlp(ln_out, b.mlp_fc_w_ut, b.mlp_fc_b, b.mlp_proj_w_ut, b.mlp_proj_b, cfg.n_embd, n_new, mlp_delta);
 
             //Add mlp delta to embeddings
             for (int t = 0; t < n_new; t++) {
@@ -341,6 +341,13 @@ bool load_model() {
 
         blocks[i].mlp_proj_b = (float*)malloc(cfg.n_embd * sizeof(float));
         fread(blocks[i].mlp_proj_b, sizeof(float), cfg.n_embd, f);
+
+        // Un-transposed MLP weights for the GPU MLP (non-transposed B).
+        blocks[i].mlp_fc_w_ut = (float*)malloc(cfg.n_embd * 4 * cfg.n_embd * sizeof(float));
+        fread(blocks[i].mlp_fc_w_ut, sizeof(float), cfg.n_embd * 4 * cfg.n_embd, f);
+
+        blocks[i].mlp_proj_w_ut = (float*)malloc(cfg.n_embd * 4 * cfg.n_embd * sizeof(float));
+        fread(blocks[i].mlp_proj_w_ut, sizeof(float), cfg.n_embd * 4 * cfg.n_embd, f);
     }
 
     lnf_w = (float*)malloc(cfg.n_embd * sizeof(float));

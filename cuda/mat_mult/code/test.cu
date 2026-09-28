@@ -254,7 +254,7 @@ void test_regtile() {
         test_time = test_times[num_runs / 2];      // median
         cublas_time = cublas_times[num_runs / 2];
 
-        std::cout << " Tested Regtile Kernel Time: " << test_time << " for matrix size " << matrix_sizes[i]
+        std::cout << " Tested Float4 Kernel Time: " << test_time << " for matrix size " << matrix_sizes[i]
                   << " with tile size " << 16 << " and reg tile size " << 8 << "." << std::endl;
         std::cout << " Tested cuBLAS Time: " << cublas_time << " for matrix size " << matrix_sizes[i] << std::endl;
     }
