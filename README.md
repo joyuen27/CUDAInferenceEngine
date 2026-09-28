@@ -24,5 +24,4 @@ A from-scratch GPT-2 (medium) inference engine in C++, built with Bazel. Working
 Matrix-multiplication kernels (naive, tiled, register-tiled, float4-vectorized, cuBLAS) benchmarked and profiled with Nsight Compute, alongside handwritten study notes on GPU architecture and performance.
 
 ### `.claude/` — Claude .md Skills 
-Currently includes skill for benchmarking 5080 kernels on Windows WSL2.0. Mainly verification of platform and setup power modes
-Follows https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html 
+Currently includes skill for benchmarking 5080 kernels on Windows WSL2.0. Mainly verification of platform and setup power modes. Follows https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html 
